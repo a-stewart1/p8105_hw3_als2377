@@ -87,4 +87,34 @@ accel_df =
   mutate_at(vars(activity_minute), as.factor) %>% 
   mutate_at(vars(day), as.factor) %>% 
   mutate_at(vars(weekday_weekend), as.factor)
+```
+
+This dataset contains five weeks of accelerometer data collected on a 63-year-old male who was admitted to the Columbia University Medical Center and diagnosed with congestive heart failure. The variables in the dataset are `r variable.names(accel_df)`. The activity_minute variable represents each minute of a 24-hour day starting at midnight, with the respective activity counts for each minute shown by the activity_count variable. The final table contains `r nrow(accel_df)` rows and `r ncol(accel_df)` columns. The mean activity count over the five-week period is `r accel_df %>% summarize(mean_activity = mean(activity_count, na.rm = TRUE))`. 
+
+Create a total activity variable for each day and create a table. 
+
+```{r}
+accel_df %>% 
+  group_by(day_id, week, day, weekday_weekend) %>% 
+  summarize(total_activity = sum(activity_count)) %>% 
+  knitr::kable()
+```
+
+It is difficult to identify overall trends with this table but we can see that the minimum total activity, a significant decrease from the average total activity count, occurred on Saturdays. 
+
+Make a single-panel plot. 
+
+```{r}
+accel_df %>% 
+  ggplot(aes(x = activity_minute, y = activity_count, group = day_id, color = day)) +
+  geom_line(alpha = .4) +
+  geom_smooth(aes(group = day)) +
+  labs(
+    title = "24-Hour Activity Time", 
+    x = "Minute of 24-Hour Day", 
+    y = "Activity Count",
+    caption = "Accelerometer data from participant at Columbia University Medical Center") + 
+  theme_set(theme_minimal())
+```
+
 
