@@ -1,36 +1,74 @@
 ---
-title: "Simple document"
-output: html_document
+title: "Homework 3"
+author: Allison Stewart
+output: github_document
 ---
 
-I'm an R Markdown document! 
-
-# Section 1
-
-Here's a **code chunk** that samples from 
-a _normal distribution_:
+This is my solution for Homework 3. 
 
 ```{r}
-samp = rnorm(100)
-length(samp)
-```
-
-# Section 2
-
-I can take the mean of the sample, too!
-The mean is `r mean(samp)`.
-
-The code chunk below creates a data frame and generates a plot. 
-
-```{r plot_example}
 library(tidyverse)
-
-plot_df = tibble(
-  x = rnorm(500, mean = 2, sd = 14), 
-  y = 3 - 4.2 * x + rnorm(500)
-)
-
-ggplot(plot_df, aes(x = x, y = y)) + geom_point()
+library(readxl)
+library(dplyr)
+library(ggplot2)
 ```
 
-This plot is really great!
+## Problem 1 
+
+```{r}
+library(p8105.datasets)
+data("instacart")
+```
+
+This dataset contains `r nrow(instacart)` rows and `r ncol(instacart)` columns. Observations are at the level of items in orders by user. There are also item variables -- name, aisle, department, and some numeric codes. 
+
+How many aisles, and which are most items from? 
+
+```{r}
+instacart %>% 
+  count(aisle) %>% 
+  arrange(desc(n))
+```
+
+Make a plot! 
+
+```{r}
+instacart %>% 
+  count(aisle) %>% 
+  filter(n > 10000) %>% 
+  mutate(
+    aisle = factor(aisle), 
+    aisle = fct_reorder(aisle,n)
+  ) %>% 
+  ggplot(aes(x = aisle, y = n)) + 
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+```
+
+Make a table! 
+
+```{r}
+instacart %>%
+  filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetable fruits")) %>% 
+  group_by(aisle) %>% 
+  count(product_name) %>% 
+  mutate(rank = min_rank(desc(n))) %>% 
+  filter(rank < 4) %>% 
+  arrange(aisle, rank) %>% 
+  knitr::kable()
+```
+
+Apples vs. ice cream 
+
+```{r}
+instacart %>% 
+  filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) %>% 
+  group_by(product_name, order_dow) %>% 
+  summarize(mean_hour = mean(order_hour_of_day)) %>% 
+  pivot_wider(
+    names_from = order_dow, 
+    values_from = mean_hour
+  )
+```
+
+
