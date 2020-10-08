@@ -117,4 +117,19 @@ accel_df %>%
   theme_set(theme_minimal())
 ```
 
+## Problem 3 
+
+```{r}
+library(p8105.datasets)
+data("ny_noaa")
+```
+
+Clean ny_noaa dataset. 
+
+```{r}
+ny_noaa %>% 
+  separate(date, c("year", "month", "day"), sep = "-") %>% mutate_at(vars(year, month, day), as.factor)
+```
+
+
 
