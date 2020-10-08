@@ -71,4 +71,20 @@ instacart %>%
   )
 ```
 
+## Problem 2 
+
+```{r}
+accel_df = 
+  read.csv("./accel_data.csv") %>% 
+  janitor::clean_names() %>% 
+  pivot_longer(
+    activity_1:activity_1440, 
+    names_to = "activity_minute", 
+    values_to = "activity_count") %>% 
+  relocate(day_id) %>% 
+  mutate("weekday_weekend" = day) %>% 
+  mutate(weekday_weekend = recode(weekday_weekend, Monday = "Weekday", Tuesday = "Weekday", Wednesday = "Weekday", Thursday = "Weekday", Friday = "Weekday", Saturday = "Weekend", Sunday = "Weekend")) %>% 
+  mutate_at(vars(activity_minute), as.factor) %>% 
+  mutate_at(vars(day), as.factor) %>% 
+  mutate_at(vars(weekday_weekend), as.factor)
 
