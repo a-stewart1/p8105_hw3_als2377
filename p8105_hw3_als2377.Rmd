@@ -150,7 +150,7 @@ tmax_weather =
   filter(month %in% c("1", "7")) %>% 
   group_by(id, year, month) %>% 
   summarize(mean_tmax = mean(tmax, na.rm = TRUE)) 
-  
+
 ggplot(tmax_weather, aes(x = year, y = mean_tmax)) + geom_point() + facet_grid(~ month) +
   labs(
     title = "Mean average temperature for January and July across stations and years", 
@@ -158,9 +158,9 @@ ggplot(tmax_weather, aes(x = year, y = mean_tmax)) + geom_point() + facet_grid(~
     y = "average maximum temperature (C)")
 ```
 
-From these plots we can see that there is more variability in average maximum temperature during the month of January as compared to July. The average maximum temperature for July in about 25 degrees Celsius higher than that of January. We can see a few outliers, including a maximum temperature of 14 degrees Celsius in July of 1998 and a maximum temperature of about 4 degrees Celsius in January of 1982. 
+From these plots, we can see that there is more variability in average maximum temperature during the month of January as compared to July. The average maximum temperature for July is about 25 degrees Celsius higher than that of January. We can see a few outliers, including a maximum temperature of 14 degrees Celsius in July of 1998 and a maximum temperature of about 4 degrees Celsius in January of 1982. 
 
-Plot tmax vs tmin. 
+Plot tmax vs tmin and snowfall distribution. 
 
 ```{r}
 p3_plot_2 = 
@@ -175,15 +175,16 @@ weather_df %>%
 p3_plot_3 = 
   weather_df %>% 
   filter(snow > 0 & snow < 100) %>% 
-  ggplot(aes(x = year, y = snow)) +
-  geom_violin() + 
+  ggplot(aes(x = year, y = snow, group = year)) +
+  geom_violin() +
   labs(
     title = "Snowfall Distribution", 
-    x = "Snowfall(mm)", 
-    y = "Year")
+    x = "Year", 
+    y = "Snowfall Distribution(mm)")
 
 (p3_plot_2 + p3_plot_3)
 ```
 
+The Maximum Temperature vs. Minimum Temperature plot shows a pattern in which maximum temperature temperature as minimum temperature increases. There are several outliers, notably a couple data points that represent a minimum and maximum temperature of 60 degrees Celsius. We the most observations to be concentrated between 0 and 30 degrees celsius. 
 
-
+The Snowfall Distribution plot indicates a slight increase in median rainfall from 1980 to 1995 and then a decrease from 1995 to 2010. 
