@@ -117,6 +117,8 @@ accel_df %>%
   theme_set(theme_minimal())
 ```
 
+From this graph, we can see 
+
 ## Problem 3 
 
 ```{r}
@@ -124,12 +126,15 @@ library(p8105.datasets)
 data("ny_noaa")
 ```
 
-Clean ny_noaa dataset. 
+This dataset contains `r nrow(ny_noaa)` rows and `r ncol(ny_noaa)` columns. 
+
+Clean ny_noaa dataset.
 
 ```{r}
 ny_noaa %>% 
-  separate(date, c("year", "month", "day"), sep = "-") %>% mutate_at(vars(year, month, day), as.factor)
+  separate(date, c("year", "month", "day"), sep = "-", convert = TRUE) %>% 
+ mutate(tmin = as.numeric(tmin)) %>% 
+mutate(tmax = as.numeric(tmax)) 
 ```
-
 
 
