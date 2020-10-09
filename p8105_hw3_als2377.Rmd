@@ -117,7 +117,7 @@ accel_df %>%
   theme_set(theme_minimal())
 ```
 
-From this graph, we can see 
+From this graph, we can see that the participant consistently was most active early in the morning, with the activity level elevated on Friday. There is a also a peak in activity on Sunday in the evening. The participant was least active around 10am on all days.  
 
 ## Problem 3 
 
@@ -126,7 +126,7 @@ library(p8105.datasets)
 data("ny_noaa")
 ```
 
-This dataset contains `r nrow(ny_noaa)` rows and `r ncol(ny_noaa)` columns. 
+This dataset contains `r nrow(ny_noaa)` rows and `r ncol(ny_noaa)` columns. The variables of the dataset include: `r variable.names(ny_noaa)`. There are many missing values for the precipitation, snowfall, snowdepth, and temperature variables. 
 
 Clean ny_noaa dataset.
 
@@ -134,7 +134,9 @@ Clean ny_noaa dataset.
 ny_noaa %>% 
   separate(date, c("year", "month", "day"), sep = "-", convert = TRUE) %>% 
  mutate(tmin = as.numeric(tmin)) %>% 
-mutate(tmax = as.numeric(tmax)) 
+mutate(tmax = as.numeric(tmax)) %>% 
+  mutate(tmin = tmin/10) %>% 
+  mutate(tmax = tmax/10)
 ```
 
 
