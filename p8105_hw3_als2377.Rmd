@@ -13,6 +13,7 @@ library(dplyr)
 library(ggplot2)
 library(patchwork)
 library(ggridges)
+library(hexbin)
 ```
 
 ## Problem 1 
@@ -158,4 +159,31 @@ ggplot(tmax_weather, aes(x = year, y = mean_tmax)) + geom_point() + facet_grid(~
 ```
 
 From these plots we can see that there is more variability in average maximum temperature during the month of January as compared to July. The average maximum temperature for July in about 25 degrees Celsius higher than that of January. We can see a few outliers, including a maximum temperature of 14 degrees Celsius in July of 1998 and a maximum temperature of about 4 degrees Celsius in January of 1982. 
+
+Plot tmax vs tmin. 
+
+```{r}
+p3_plot_2 = 
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_hex() + 
+ labs(
+    title = "Maximum Temperature vs. Minimum Temperature", 
+    x = "Minimum Temperature (C)", 
+    y = "Maximum Temperature (C)")
+
+p3_plot_3 = 
+  weather_df %>% 
+  filter(snow > 0 & snow < 100) %>% 
+  ggplot(aes(x = year, y = snow)) +
+  geom_violin() + 
+  labs(
+    title = "Snowfall Distribution", 
+    x = "Snowfall(mm)", 
+    y = "Year")
+
+(p3_plot_2 + p3_plot_3)
+```
+
+
 
