@@ -144,11 +144,18 @@ mutate(tmax = as.numeric(tmax)) %>%
 Make a two-panel plot showing the average max temp in Jan and July.
 
 ```{r}
-weather_df %>% 
+tmax_weather = 
+  weather_df %>% 
   filter(month %in% c("1", "7")) %>% 
   group_by(id, year, month) %>% 
   summarize(mean_tmax = mean(tmax, na.rm = TRUE)) 
+  
+ggplot(tmax_weather, aes(x = year, y = mean_tmax)) + geom_point() + facet_grid(~ month) +
+  labs(
+    title = "Mean average temperature for January and July across stations and years", 
+    x = "year", 
+    y = "average maximum temperature (C)")
 ```
 
-
+From these plots we can see that there is more variability in average maximum temperature during the month of January as compared to July. The average maximum temperature for July in about 25 degrees Celsius higher than that of January. We can see a few outliers, including a maximum temperature of 14 degrees Celsius in July of 1998 and a maximum temperature of about 4 degrees Celsius in January of 1982. 
 
