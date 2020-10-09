@@ -11,6 +11,8 @@ library(tidyverse)
 library(readxl)
 library(dplyr)
 library(ggplot2)
+library(patchwork)
+library(ggridges)
 ```
 
 ## Problem 1 
@@ -132,11 +134,12 @@ Clean ny_noaa dataset.
 
 ```{r}
 ny_noaa %>% 
-  separate(date, c("year", "month", "day"), sep = "-", convert = TRUE) %>% 
- mutate(tmin = as.numeric(tmin)) %>% 
+  separate(date, c("year", "month", "day"), sep = "-", convert = TRUE) %>% mutate(tmin = as.numeric(tmin)) %>% 
 mutate(tmax = as.numeric(tmax)) %>% 
   mutate(tmin = tmin/10) %>% 
-  mutate(tmax = tmax/10)
+  mutate(tmax = tmax/10) 
 ```
+
+Make a two-panel plot showing the average max temp in Jan and July.
 
 
