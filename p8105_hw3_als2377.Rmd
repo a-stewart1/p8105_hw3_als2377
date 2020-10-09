@@ -130,16 +130,25 @@ data("ny_noaa")
 
 This dataset contains `r nrow(ny_noaa)` rows and `r ncol(ny_noaa)` columns. The variables of the dataset include: `r variable.names(ny_noaa)`. There are many missing values for the precipitation, snowfall, snowdepth, and temperature variables. 
 
-Clean ny_noaa dataset.
+Clean and mutate ny_noaa dataset.
 
 ```{r}
-ny_noaa %>% 
+weather_df = 
+  ny_noaa %>% 
   separate(date, c("year", "month", "day"), sep = "-", convert = TRUE) %>% mutate(tmin = as.numeric(tmin)) %>% 
 mutate(tmax = as.numeric(tmax)) %>% 
   mutate(tmin = tmin/10) %>% 
-  mutate(tmax = tmax/10) 
+  mutate(tmax = tmax/10)
 ```
 
 Make a two-panel plot showing the average max temp in Jan and July.
+
+```{r}
+weather_df %>% 
+  filter(month %in% c("1", "7")) %>% 
+  group_by(id, year, month) %>% 
+  summarize(mean_tmax = mean(tmax, na.rm = TRUE)) 
+```
+
 
 
