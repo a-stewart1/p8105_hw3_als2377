@@ -95,7 +95,6 @@ accel_df =
 This dataset contains five weeks of accelerometer data collected on a 63-year-old male who was admitted to the Columbia University Medical Center and diagnosed with congestive heart failure. The variables in the dataset are `r variable.names(accel_df)`. The activity_minute variable represents each minute of a 24-hour day starting at midnight, with the respective activity counts for each minute shown by the activity_count variable. The final table contains `r nrow(accel_df)` rows and `r ncol(accel_df)` columns. The mean activity count over the five-week period is `r accel_df %>% summarize(mean_activity = mean(activity_count, na.rm = TRUE))`. 
 
 Create a total activity variable for each day and create a table. 
-
 ```{r}
 accel_df %>% 
   group_by(day_id, week, day, weekday_weekend) %>% 
@@ -103,15 +102,20 @@ accel_df %>%
   knitr::kable()
 ```
 
-It is difficult to identify overall trends with this table but we can see that the minimum total activity, a significant decrease from the average total activity count, occurred on Saturdays. 
+It is difficult to identify overall trends with this table but we can see that the minimum total activity, a significant decrease from the average total activity count, occurred on Saturdays. There were fluctuations of activity throughout the week. 
 
 Make a single-panel plot. 
 
 ```{r}
 accel_df %>% 
+  mutate_at(vars(activity_minute), as.integer) %>% 
   ggplot(aes(x = activity_minute, y = activity_count, group = day_id, color = day)) +
   geom_line(alpha = .4) +
   geom_smooth(aes(group = day)) +
+  scale_x_continuous(
+    breaks = c(500, 1000, 1500), 
+    labels = c("500", "1000", "1500")
+  ) + 
   labs(
     title = "24-Hour Activity Time", 
     x = "Minute of 24-Hour Day", 
@@ -120,7 +124,7 @@ accel_df %>%
   theme_set(theme_minimal())
 ```
 
-From this graph, we can see that the participant consistently was most active early in the morning, with the activity level elevated on Friday. There is a also a peak in activity on Sunday in the evening. The participant was least active around 10am on all days.  
+From this graph, we can see that the participant consistently was most active early in the morning, around 4am, with the activity level elevated on Friday. There is also a peak in activity on Sunday in the evening around 8pm. The participant was least active around 8am on all days.  
 
 ## Problem 3 
 
@@ -129,7 +133,7 @@ library(p8105.datasets)
 data("ny_noaa")
 ```
 
-This dataset contains `r nrow(ny_noaa)` rows and `r ncol(ny_noaa)` columns. The variables of the dataset include: `r variable.names(ny_noaa)`. There are many missing values for the precipitation, snowfall, snowdepth, and temperature variables. 
+This dataset contains `r nrow(ny_noaa)` rows and `r ncol(ny_noaa)` columns. The variables of the dataset include: `r variable.names(ny_noaa)`. There are many missing values for the precipitation, snowfall, snow depth, and temperature variables; some stations have missing values for all of these variables. Maximum and minimum temperatures, in particular, are missing from many stations. 
 
 Clean and mutate ny_noaa dataset.
 
@@ -142,6 +146,8 @@ mutate(tmax = as.numeric(tmax)) %>%
   mutate(tmax = tmax/10)
 ```
 
+The most commonly observed values for snowfall are 0 and missing. 
+
 Make a two-panel plot showing the average max temp in Jan and July.
 
 ```{r}
@@ -151,11 +157,12 @@ tmax_weather =
   group_by(id, year, month) %>% 
   summarize(mean_tmax = mean(tmax, na.rm = TRUE)) 
 
-ggplot(tmax_weather, aes(x = year, y = mean_tmax)) + geom_point() + facet_grid(~ month) +
+ggplot(tmax_weather, aes(x = year, y = mean_tmax, group = id)) + geom_point() + facet_grid(~ month) +
   labs(
-    title = "Mean average temperature for January and July across stations and years", 
+    title = "Mean average temperature for January and July across stations and years",
     x = "year", 
-    y = "average maximum temperature (C)")
+    y = "average maximum temperature (C)") +
+    theme_set(theme_minimal())
 ```
 
 From these plots, we can see that there is more variability in average maximum temperature during the month of January as compared to July. The average maximum temperature for July is about 25 degrees Celsius higher than that of January. We can see a few outliers, including a maximum temperature of 14 degrees Celsius in July of 1998 and a maximum temperature of about 4 degrees Celsius in January of 1982. 
@@ -182,9 +189,9 @@ p3_plot_3 =
     x = "Year", 
     y = "Snowfall Distribution(mm)")
 
-(p3_plot_2 + p3_plot_3)
+(p3_plot_2 + p3_plot_3) 
 ```
 
-The Maximum Temperature vs. Minimum Temperature plot shows a pattern in which maximum temperature temperature as minimum temperature increases. There are several outliers, notably a couple data points that represent a minimum and maximum temperature of 60 degrees Celsius. We the most observations to be concentrated between 0 and 30 degrees celsius. 
+The Maximum Temperature vs. Minimum Temperature plot shows a pattern in which maximum temperature temperature increases as minimum temperature increases. There are several outliers, notably a couple data points that represent a minimum and maximum temperature of 60 degrees Celsius. The most observations are concentrated between 0 and 30 degrees celsius. 
 
 The Snowfall Distribution plot indicates a slight increase in median rainfall from 1980 to 1995 and then a decrease from 1995 to 2010. 
